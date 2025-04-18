@@ -1,8 +1,8 @@
 package com.xmu.biomass.plant.calculator;
 
 import com.xmu.biomass.plant.enums.PlantCategoryEnum;
-import com.xmu.biomass.plant.vo.CalculateResult;
 import com.xmu.biomass.plant.ro.CalculatorRo;
+import com.xmu.biomass.plant.vo.CalculateResult;
 import com.xmu.biomass.plant.util.DecimalFormatter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,90 +17,37 @@ import java.text.DecimalFormat;
  */
 @Component
 @RequiredArgsConstructor
+@Getter
 public class AegicerasCalculator extends CarbonRatioCalculator{
 
-    private final DecimalFormatter formatter;
-
-    @Getter
     private final String calcKey = "Aegiceras";
 
-    @Override
-    public DecimalFormat formatter() {
-        return formatter.getFormatter();
-    }
+    private final String calcDescription = "适用于桐花树";
 
     @Override
-    public CalculateResult calculate(CalculatorRo ro) {
-        if(PlantCategoryEnum.ARBOR.getCode().equals(ro.getCategory())){
-           return this.calculateArbor(ro);
-        }else if(PlantCategoryEnum.SMALL_ARBOR.getCode().equals(ro.getCategory())){
-            return this.calculateSmallArbor(ro);
-        }else if(PlantCategoryEnum.BUSH.getCode().equals(ro.getCategory())){
+    public Double calculate(CalculatorRo ro) {
+        PlantCategoryEnum categoryEnum = processCategory(ro);
+        if(PlantCategoryEnum.BUSH == categoryEnum){
             return this.calculateBush(ro);
         }
-        return null;
+        return this.calcuateShrub(ro);
     }
-    public CalculateResult calculateArbor(CalculatorRo ro) {
-
-        DecimalFormat df = this.formatter();
-        double above = Math.pow(10,0.465 * Math.log10(Math.pow(ro.getDbh()/10,2) * ro.getHeight()) + 1.496);
-        double bellow = Math.pow(10,0.303 * Math.log10(Math.pow(ro.getDbh()/10,2) * ro.getHeight()) + 0.967);
-        double total = above + bellow;
-        CalculateResult result = new CalculateResult();
-        result.setAbove(df.format(above));
-        result.setBellow(df.format(bellow));
-        result.setTotal(df.format(total));
-        double carbonRatioAbove = this.calculateCarbon(ro.getRatio(),above);
-        result.setCarbonRatioAbove(df.format(carbonRatioAbove));
-        double carbonRatioBellow = this.calculateCarbon(ro.getRatio(),bellow);
-        result.setCarbonRatioBelow(df.format(carbonRatioBellow));
-        double carbonRatioTotal = this.calculateCarbon(ro.getRatio(),total);
-        result.setCarbonRatioTotal(df.format(carbonRatioTotal));
-        double carbonStorage = carbonRatioTotal * ro.getCount() * ro.getMonitoringArea() / ro.getSampleArea();
-        result.setCarbonStorage(df.format(carbonStorage));
-        return result;
+    private PlantCategoryEnum processCategory(CalculatorRo ro){
+        if(ro.getHeight().compareTo(2D) < 0){
+            return PlantCategoryEnum.BUSH;
+        }
+        return PlantCategoryEnum.SHRUB;
     }
 
-    public CalculateResult calculateSmallArbor(CalculatorRo ro) {
-
-        DecimalFormat df = this.formatter();
-        double above = 0.644347 * ro.getDbh() - 0.425066;
-        double bellow = 0.163242 * ro.getDbh() - 0.10423;
-        double total = above + bellow;
-        CalculateResult result = new CalculateResult();
-        result.setAbove(df.format(above));
-        result.setBellow(df.format(bellow));
-        result.setTotal(df.format(total));
-        double carbonRatioAbove = this.calculateCarbon(ro.getRatio(),above);
-        result.setCarbonRatioAbove(df.format(carbonRatioAbove));
-        double carbonRatioBellow = this.calculateCarbon(ro.getRatio(),bellow);
-        result.setCarbonRatioBelow(df.format(carbonRatioBellow));
-        double carbonRatioTotal = this.calculateCarbon(ro.getRatio(),total);
-        result.setCarbonRatioTotal(df.format(carbonRatioTotal));
-        double carbonStorage = carbonRatioTotal * ro.getCount() * ro.getMonitoringArea() / ro.getSampleArea();
-        result.setCarbonStorage(df.format(carbonStorage));
-        return result;
+    private Double calcuateShrub(CalculatorRo ro){
+        return 0.780778 * ro.getDbh() - 0.325215;
     }
 
-    public CalculateResult calculateBush(CalculatorRo ro) {
-
-        DecimalFormat df = this.formatter();
-        double above = 0.644347 * ro.getDbh() - 0.425066;
-        double bellow = 0.163242 * ro.getDbh() - 0.10423;
-        double total = above + bellow;
-        CalculateResult result = new CalculateResult();
-        result.setAbove(df.format(above));
-        result.setBellow(df.format(bellow));
-        result.setTotal(df.format(total));
-        double carbonRatioAbove = this.calculateCarbon(ro.getRatio(),above);
-        result.setCarbonRatioAbove(df.format(carbonRatioAbove));
-        double carbonRatioBellow = this.calculateCarbon(ro.getRatio(),bellow);
-        result.setCarbonRatioBelow(df.format(carbonRatioBellow));
-        double carbonRatioTotal = this.calculateCarbon(ro.getRatio(),total);
-        result.setCarbonRatioTotal(df.format(carbonRatioTotal));
-        double carbonStorage = carbonRatioTotal * ro.getCount() * ro.getMonitoringArea() / ro.getSampleArea();
-        result.setCarbonStorage(df.format(carbonStorage));
-        return result;
+    private Double calculateBush(CalculatorRo ro) {
+        // 使用基径 dbh=d0
+        double above =  0.02039 * Math.pow(Math.pow(ro.getDbh(),2) * ro.getHeight(),0.83749);
+        double bellow = above / 7;
+        return this.calculateCarbon(ro.getRatio(),above , bellow);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.xmu.biomass.plant.calculator;
 
-import com.xmu.biomass.plant.vo.CalculateResult;
 import com.xmu.biomass.plant.ro.CalculatorRo;
+import com.xmu.biomass.plant.vo.CalculateResult;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -12,9 +12,9 @@ import java.util.Arrays;
  */
 public abstract class CarbonRatioCalculator {
     public abstract String getCalcKey();
-    abstract DecimalFormat formatter();
-    public abstract CalculateResult calculate(CalculatorRo ro);
-    protected double calculateCarbon(double ratio,double... carbons) {
+    public abstract String getCalcDescription();
+    public abstract Double calculate(CalculatorRo ro);
+    protected Double calculateCarbon(double ratio,double... carbons) {
         return Arrays.stream(carbons).sum() * ratio;
     }
 }

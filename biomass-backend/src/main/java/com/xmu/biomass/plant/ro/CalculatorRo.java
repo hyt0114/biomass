@@ -9,15 +9,8 @@ import lombok.Data;
  */
 @Data
 public class CalculatorRo {
-    private double sampleArea;
-    private double count;
-    private double monitoringArea;
-    private String monitoringDate;
-    private String plant;
-    private String category;
-    private double dbh; // 胸径
-    private double basal;// 基径
-    private double height; // 树高
-    private double ratio;
-    private double density;
+    private Double dbh; // 胸径
+    private Double height; // 树高
+    private Double ratio;
+    private Double density;
 }

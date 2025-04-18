@@ -5,7 +5,9 @@ import com.xmu.biomass.common.vo.AjaxVo;
 import com.xmu.biomass.plant.calculator.CarbonRatioCalculator;
 import com.xmu.biomass.plant.entity.Mangrove;
 import com.xmu.biomass.plant.ro.CalcFormsRo;
+import com.xmu.biomass.plant.service.CalculatorService;
 import com.xmu.biomass.plant.vo.CalcFormsResultVo;
+import com.xmu.biomass.plant.vo.CalculateDiffResult;
 import com.xmu.biomass.plant.vo.CalculateResult;
 import com.xmu.biomass.plant.service.MangroveService;
 import lombok.RequiredArgsConstructor;
@@ -26,37 +28,11 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class CarbonCalculatorController {
 
-    private final List<CarbonRatioCalculator> calculators;
-    private final MangroveService mangroveService;
+    private final CalculatorService calculatorService;
 
     @PostMapping("/handle")
-    public AjaxVo<CalcFormsResultVo> doCalculate(@RequestBody CalcFormsRo ro) {
-        Mangrove mangroveOne = mangroveService.selectById(ro.getFormOne().getPlant());
-        CarbonRatioCalculator calculatorOne = getCalculator(mangroveOne.getCalcKey());
-        Objects.requireNonNull(calculatorOne,"没有该类型的植株计算公式");
-        ro.getFormOne().setRatio(mangroveOne.getCarbonContentRatio());
-        ro.getFormOne().setDensity(mangroveOne.getDensity());
-        CalculateResult resultOne = calculatorOne.calculate(ro.getFormOne());
-        resultOne.setMonitoringDate(ro.getFormOne().getMonitoringDate());
-
-        Mangrove mangroveTwo = mangroveService.selectById(ro.getFormTwo().getPlant());
-        CarbonRatioCalculator calculatorTwo = getCalculator(mangroveTwo.getCalcKey());
-        Objects.requireNonNull(calculatorTwo,"没有该类型的植株计算公式");
-        ro.getFormTwo().setRatio(mangroveTwo.getCarbonContentRatio());
-        ro.getFormTwo().setDensity(mangroveTwo.getDensity());
-        CalculateResult resultTwo = calculatorTwo.calculate(ro.getFormTwo());
-        resultTwo.setMonitoringDate(ro.getFormTwo().getMonitoringDate());
-
-        CalcFormsResultVo resultVo = new CalcFormsResultVo();
-        resultVo.setResultOne(resultOne);
-        resultVo.setResultTwo(resultTwo);
-
-        double increment = Double.parseDouble(resultTwo.getCarbonStorage()) - Double.parseDouble(resultOne.getCarbonStorage());
-
-        resultVo.setCarbonStorageIncrement(String.valueOf(increment));
-        return ResponseUtil.success(resultVo);
+    public AjaxVo<CalculateDiffResult> doCalculate(@RequestBody CalcFormsRo ro) {
+        return ResponseUtil.success(calculatorService.doCalculate(ro));
     }
-    private CarbonRatioCalculator getCalculator(String calcKey) {
-        return calculators.stream().filter(c->c.getCalcKey().equals(calcKey)).findFirst().orElse(null);
-    }
+
 }

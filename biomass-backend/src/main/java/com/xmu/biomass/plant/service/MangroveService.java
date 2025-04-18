@@ -97,4 +97,8 @@ public class MangroveService {
     public Mangrove selectById(String id) {
         return mapper.selectById(id);
     }
+
+    public List<Mangrove> selectByIds(List<Integer> ids) {
+        return mapper.selectByIds(ids);
+    }
 }

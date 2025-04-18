@@ -60,10 +60,10 @@
                 >
                   <el-form-item
                     label=""
-                    :prop="`firstSamples[${sampleIndex}].plants[${plantIndex}].kind`"
+                    :prop="`firstSamples[${sampleIndex}].plants[${plantIndex}].id`"
                     :rules="{ required: true, message: '请选择', trigger: 'change' }"
                   >
-                    <el-select v-model="plant.kind" placeholder="植株物种" class="w-180 mr-12">
+                    <el-select v-model="plant.id" placeholder="植株物种" class="w-140 mr-12">
                       <el-option
                         v-for="plant in treeList"
                         :key="plant.id"
@@ -189,10 +189,10 @@
                 >
                   <el-form-item
                     label=""
-                    :prop="`secondSamples[${sampleIndex}].plants[${plantIndex}].kind`"
+                    :prop="`secondSamples[${sampleIndex}].plants[${plantIndex}].id`"
                     :rules="{ required: true, message: '请选择', trigger: 'change' }"
                   >
-                    <el-select v-model="plant.kind" placeholder="植株物种" class="w-180 mr-12">
+                    <el-select v-model="plant.id" placeholder="植株物种" class="w-140 mr-12">
                       <el-option
                         v-for="plant in treeList"
                         :key="plant.id"
@@ -274,6 +274,7 @@
         >开始计算</el-button
       >
     </div>
+    <CalculateResult v-model:visible="calcResultVisible" :data="calcResult" />
   </div>
 </template>
 <script setup>
@@ -281,6 +282,7 @@ import { nextTick, reactive, ref } from 'vue'
 import IconSquareMeter from '@/components/icons/IconSquareMeter.vue'
 import { loadTreeCategories, loadTreeList, doCalc } from '@/api/calculator'
 import { ElMessage } from 'element-plus'
+import CalculateResult from './components/CalculateResult.vue'
 
 const formState = reactive({
   firstMonitorDate: null,
@@ -294,6 +296,7 @@ const rules = reactive({
   firstMonitorDate: [{ required: true, message: '请选择T1监测日期' }],
   firstMonitorArea: [{ required: true, message: '请输入监测面积' }],
   secondMonitorDate: [{ required: true, message: '请选择T2监测日期' }],
+  secondMonitorArea: [{ required: true, message: '请输入监测面积' }],
 })
 const formRef = ref()
 const addSampleBtn1stRef = ref()
@@ -315,7 +318,7 @@ const onAddSampleClick = (list, second) => {
 
 const addPlant = (list) => {
   list.push({
-    kind: null,
+    id: null,
     dbh: null,
     height: null,
   })
@@ -324,11 +327,22 @@ const addPlant = (list) => {
 const removeItem = (list, index) => {
   list.splice(index, 1)
 }
-
+const calcResultVisible = ref(false)
+const calcResult = reactive({
+  firstSampleResults: [],
+  secondSampleResults: [],
+  firstTotal: 0,
+  secondTotal: 0,
+  difference: 0,
+  firstMonitorDate: '',
+  secondMonitorDate: '',
+})
 const onSubmit = () => {
   formRef.value.validate(async (isValid) => {
     if (isValid) {
-      doCalc(formState)
+      const resp = await doCalc(formState)
+      Object.assign(calcResult, resp)
+      calcResultVisible.value = true
     } else {
       ElMessage({
         type: 'error',
@@ -408,6 +422,9 @@ $btn-block-height: 60px;
 }
 .mt-18 {
   margin-top: 18px;
+}
+.w-140 {
+  width: 140px;
 }
 .w-180 {
   width: 180px;

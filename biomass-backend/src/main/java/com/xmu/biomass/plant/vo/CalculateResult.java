@@ -8,12 +8,10 @@ import lombok.Data;
  */
 @Data
 public class CalculateResult {
-    private String monitoringDate;
-    private String above;
-    private String bellow;
-    private String total;
-    private String carbonRatioAbove;
-    private String carbonRatioBelow;
-    private String carbonRatioTotal;
-    private String carbonStorage;
+    private Double above;
+    private Double bellow;
+    private Double total;
+    private Double carbonRatioAbove;
+    private Double carbonRatioBelow;
+    private Double carbonRatioTotal;
 }

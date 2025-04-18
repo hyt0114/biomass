@@ -1,6 +1,6 @@
 import { post, put } from '@/common/http'
 
-export function loadMangrovePag(data) {
+export function loadMangrovePage(data) {
   return post('/mangrove/page', data)
 }
 export function addMangrove(data) {

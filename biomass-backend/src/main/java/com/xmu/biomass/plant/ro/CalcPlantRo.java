@@ -8,4 +8,7 @@ import lombok.Data;
  */
 @Data
 public class CalcPlantRo {
+    private Integer id;
+    private Double dbh;
+    private Double height;
 }
