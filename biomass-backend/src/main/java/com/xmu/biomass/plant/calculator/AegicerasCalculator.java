@@ -16,7 +16,6 @@ import java.text.DecimalFormat;
  * 桐花树
  */
 @Component
-@RequiredArgsConstructor
 @Getter
 public class AegicerasCalculator extends CarbonRatioCalculator{
 
@@ -40,7 +39,7 @@ public class AegicerasCalculator extends CarbonRatioCalculator{
     }
 
     private Double calcuateShrub(CalculatorRo ro){
-        return 0.780778 * ro.getDbh() - 0.325215;
+        return this.calculateCarbon(ro.getRatio(),0.780778 * ro.getDbh() - 0.325215);
     }
 
     private Double calculateBush(CalculatorRo ro) {

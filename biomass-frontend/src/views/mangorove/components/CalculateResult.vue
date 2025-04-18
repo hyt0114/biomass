@@ -31,7 +31,7 @@
         </div>
         <div class="form-item-block">
           <div class="label">植株类型</div>
-          <div class="content">
+          <div class="content tags-wrapper">
             <el-tag type="primary" v-for="(item, index) in sampleResult.types" :key="index">{{
               item
             }}</el-tag>
@@ -39,11 +39,15 @@
         </div>
         <div class="form-item-block">
           <div class="label">总碳储量</div>
-          <div class="content">{{ sampleResult.storage.toFixed(2) }}</div>
+          <div class="content">
+            {{ sampleResult.storage.toFixed(2) }}<span class="storage-unit">kgC</span>
+          </div>
         </div>
         <div class="form-item-block">
           <div class="label">均碳储量</div>
-          <div class="content">{{ sampleResult.averageStorage.toFixed(2) }}</div>
+          <div class="content">
+            {{ sampleResult.averageStorage.toFixed(2) }}<span class="storage-unit">kgC</span>
+          </div>
         </div>
       </el-card>
     </div>
@@ -66,7 +70,7 @@
         </div>
         <div class="form-item-block">
           <div class="label">植株类型</div>
-          <div class="content">
+          <div class="content tags-wrapper">
             <el-tag type="primary" v-for="(item, index) in sampleResult.types" :key="index">{{
               item
             }}</el-tag>
@@ -74,11 +78,15 @@
         </div>
         <div class="form-item-block">
           <div class="label">总碳储量</div>
-          <div class="content">{{ sampleResult.storage.toFixed(2) }}</div>
+          <div class="content">
+            {{ sampleResult.storage.toFixed(2) }}<span class="storage-unit">kgC</span>
+          </div>
         </div>
         <div class="form-item-block">
           <div class="label">均碳储量</div>
-          <div class="content">{{ sampleResult.averageStorage.toFixed(2) }}</div>
+          <div class="content">
+            {{ sampleResult.averageStorage.toFixed(2) }}<span class="storage-unit">kgC</span>
+          </div>
         </div>
       </el-card>
     </div>
@@ -114,7 +122,7 @@ const columns = ref([
   },
   {
     prop: 'firstTotal',
-    label: 'T1碳总量',
+    label: 'T1碳总量 (kgC)',
     width: 210,
   },
   {
@@ -124,12 +132,12 @@ const columns = ref([
   },
   {
     prop: 'secondTotal',
-    label: 'T2碳总量',
+    label: 'T2碳总量 (kgC)',
     width: 210,
   },
   {
     prop: 'difference',
-    label: '增量',
+    label: '增量 (kgC)',
     extraCss: 'text-primary',
     minWidth: 210,
   },
@@ -181,5 +189,19 @@ const secondSampleResults = computed(() => {
   .content {
     padding-left: 8px;
   }
+}
+.tags-wrapper {
+  display: flex;
+  gap: 4px;
+}
+.storage-unit {
+  padding: 0 6px;
+  font-size: 12px;
+  height: 22px;
+  line-height: 22px;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  margin-left: 4px;
+  color: #999;
 }
 </style>
