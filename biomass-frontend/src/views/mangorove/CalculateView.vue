@@ -1,0 +1,418 @@
+<template>
+  <div class="calclate-view">
+    <el-form
+      ref="formRef"
+      :model="formState"
+      :rules="rules"
+      label-width="120px"
+      class="form-container height-full"
+    >
+      <div class="calclate-container">
+        <div class="calc-zone border-right">
+          <div class="title">
+            <span>T1监测数据</span>
+          </div>
+          <el-form-item prop="firstMonitorDate" label="T1监测日期">
+            <el-date-picker
+              v-model="formState.firstMonitorDate"
+              type="date"
+              value-format="YYYY-MM-DD"
+              placeholder="选择监测日期"
+              class="w-220"
+          /></el-form-item>
+          <el-form-item prop="firstMonitorArea" label="监测面积">
+            <el-input-number
+              :min="0"
+              :max="999999"
+              :precision="2"
+              v-model="formState.firstMonitorArea"
+              class="w-220"
+            >
+              <template #suffix><IconSquareMeter class="square-20" /></template> </el-input-number
+          ></el-form-item>
+          <div
+            class="sample-data-zone"
+            v-for="(sample, sampleIndex) in formState.firstSamples"
+            :key="sampleIndex"
+          >
+            <div class="sample-title">样方{{ sample.idNo }}</div>
+            <el-form-item
+              label="样方面积"
+              :prop="`firstSamples[${sampleIndex}].sampleArea`"
+              :rules="{ required: true, message: '请输入样方面积', trigger: 'blur' }"
+            >
+              <el-input-number
+                :min="0"
+                :max="999999"
+                :precision="2"
+                class="w-220"
+                v-model="sample.sampleArea"
+              >
+                <template #suffix><IconSquareMeter class="square-20" /></template> </el-input-number
+            ></el-form-item>
+            <el-form-item label="植株数据">
+              <div v-if="sample.plants?.length">
+                <div
+                  v-for="(plant, plantIndex) in sample.plants"
+                  :key="plantIndex"
+                  class="flex align-center"
+                  :class="{ 'mt-18': plantIndex > 0 }"
+                >
+                  <el-form-item
+                    label=""
+                    :prop="`firstSamples[${sampleIndex}].plants[${plantIndex}].kind`"
+                    :rules="{ required: true, message: '请选择', trigger: 'change' }"
+                  >
+                    <el-select v-model="plant.kind" placeholder="植株物种" class="w-180 mr-12">
+                      <el-option
+                        v-for="plant in treeList"
+                        :key="plant.id"
+                        :label="plant.name"
+                        :value="plant.id"
+                      ></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item
+                    label=""
+                    :prop="`firstSamples[${sampleIndex}].plants[${plantIndex}].dbh`"
+                    :rules="{ required: true, message: '请输入', trigger: 'blur' }"
+                  >
+                    <el-input-number
+                      :min="0"
+                      :max="999999"
+                      :precision="2"
+                      class="w-180 mr-12"
+                      v-model="plant.dbh"
+                      placeholder="胸径/基径"
+                    >
+                      <template #suffix>cm</template>
+                    </el-input-number>
+                  </el-form-item>
+                  <el-form-item
+                    label=""
+                    :prop="`firstSamples[${sampleIndex}].plants[${plantIndex}].height`"
+                    :rules="{ required: true, message: '请输入', trigger: 'blur' }"
+                  >
+                    <el-input-number
+                      :min="0"
+                      :max="999999"
+                      :precision="2"
+                      class="w-180 mr-12"
+                      v-model="plant.height"
+                      placeholder="树高"
+                    >
+                      <template #suffix>m</template>
+                    </el-input-number>
+                  </el-form-item>
+                  <el-icon :size="20" @click="addPlant(sample.plants)" class="cursor" title="添加"
+                    ><CirclePlus
+                  /></el-icon>
+                  <el-icon
+                    :size="20"
+                    @click="removeItem(sample.plants, sampleIndex)"
+                    class="cursor ml-12"
+                    title="移除"
+                    ><Remove
+                  /></el-icon>
+                </div>
+              </div>
+              <div v-else class="flex align-center">
+                <el-icon :size="20" @click="addPlant(sample.plants)" class="cursor" title="添加"
+                  ><CirclePlus
+                /></el-icon>
+              </div>
+            </el-form-item>
+            <el-icon
+              class="remove-btn cursor"
+              :size="20"
+              @click="removeItem(formState.firstSamples, sampleIndex)"
+              ><CircleCloseFilled
+            /></el-icon>
+          </div>
+          <el-button
+            ref="addSampleBtn1stRef"
+            type="primary"
+            plain
+            class="add-sample-btn"
+            @click="onAddSampleClick(formState.firstSamples)"
+            >添加样方数据</el-button
+          >
+        </div>
+        <div class="calc-zone">
+          <div class="title">
+            <span>T2监测数据</span>
+          </div>
+          <el-form-item prop="secondMonitorDate" label="T2监测日期">
+            <el-date-picker
+              v-model="formState.secondMonitorDate"
+              type="date"
+              value-format="YYYY-MM-DD"
+              placeholder="选择监测日期"
+          /></el-form-item>
+          <el-form-item prop="secondMonitorArea" label="监测面积">
+            <el-input-number
+              :min="0"
+              :max="999999"
+              :precision="2"
+              v-model="formState.secondMonitorArea"
+              class="w-220"
+            >
+              <template #suffix><IconSquareMeter class="square-20" /></template> </el-input-number
+          ></el-form-item>
+          <div
+            class="sample-data-zone"
+            v-for="(sample, sampleIndex) in formState.secondSamples"
+            :key="sampleIndex"
+          >
+            <div class="sample-title">样方{{ sample.idNo }}</div>
+            <el-form-item
+              label="样方面积"
+              :prop="`secondSamples[${sampleIndex}].sampleArea`"
+              :rules="{ required: true, message: '请输入样方面积', trigger: 'blur' }"
+            >
+              <el-input-number
+                :min="0"
+                :max="999999"
+                :precision="2"
+                class="w-220"
+                v-model="sample.sampleArea"
+              >
+                <template #suffix><IconSquareMeter class="square-20" /></template> </el-input-number
+            ></el-form-item>
+            <el-form-item label="植株数据">
+              <div v-if="sample.plants?.length">
+                <div
+                  v-for="(plant, plantIndex) in sample.plants"
+                  :key="plantIndex"
+                  class="flex align-center"
+                  :class="{ 'mt-18': plantIndex > 0 }"
+                >
+                  <el-form-item
+                    label=""
+                    :prop="`secondSamples[${sampleIndex}].plants[${plantIndex}].kind`"
+                    :rules="{ required: true, message: '请选择', trigger: 'change' }"
+                  >
+                    <el-select v-model="plant.kind" placeholder="植株物种" class="w-180 mr-12">
+                      <el-option
+                        v-for="plant in treeList"
+                        :key="plant.id"
+                        :label="plant.name"
+                        :value="plant.id"
+                      ></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item
+                    label=""
+                    :prop="`secondSamples[${sampleIndex}].plants[${plantIndex}].dbh`"
+                    :rules="{ required: true, message: '请输入', trigger: 'blur' }"
+                  >
+                    <el-input-number
+                      :min="0"
+                      :max="999999"
+                      :precision="2"
+                      class="w-180 mr-12"
+                      v-model="plant.dbh"
+                      placeholder="胸径/基径"
+                    >
+                      <template #suffix>cm</template>
+                    </el-input-number>
+                  </el-form-item>
+                  <el-form-item
+                    label=""
+                    :prop="`secondSamples[${sampleIndex}].plants[${plantIndex}].height`"
+                    :rules="{ required: true, message: '请输入', trigger: 'blur' }"
+                  >
+                    <el-input-number
+                      :min="0"
+                      :max="999999"
+                      :precision="2"
+                      class="w-180 mr-12"
+                      v-model="plant.height"
+                      placeholder="树高"
+                    >
+                      <template #suffix>m</template>
+                    </el-input-number>
+                  </el-form-item>
+                  <el-icon :size="20" @click="addPlant(sample.plants)" class="cursor" title="添加"
+                    ><CirclePlus
+                  /></el-icon>
+                  <el-icon
+                    :size="20"
+                    @click="removeItem(sample.plants, sampleIndex)"
+                    class="cursor ml-12"
+                    title="移除"
+                    ><Remove
+                  /></el-icon>
+                </div>
+              </div>
+              <div v-else class="flex align-center">
+                <el-icon :size="20" @click="addPlant(sample.plants)" class="cursor" title="添加"
+                  ><CirclePlus
+                /></el-icon>
+              </div>
+            </el-form-item>
+            <el-icon
+              class="remove-btn cursor"
+              :size="20"
+              @click="removeItem(formState.secondSamples, sampleIndex)"
+              ><CircleCloseFilled
+            /></el-icon>
+          </div>
+          <el-button
+            ref="addSampleBtn2ndRef"
+            type="primary"
+            plain
+            class="add-sample-btn"
+            @click="onAddSampleClick(formState.secondSamples, true)"
+            >添加样方数据</el-button
+          >
+        </div>
+      </div>
+    </el-form>
+    <div class="btn-block">
+      <el-button type="primary" @click="onSubmit" style="width: 50%; height: 40px; font-size: 20px"
+        >开始计算</el-button
+      >
+    </div>
+  </div>
+</template>
+<script setup>
+import { nextTick, reactive, ref } from 'vue'
+import IconSquareMeter from '@/components/icons/IconSquareMeter.vue'
+import { loadTreeCategories, loadTreeList, doCalc } from '@/api/calculator'
+import { ElMessage } from 'element-plus'
+
+const formState = reactive({
+  firstMonitorDate: null,
+  firstMonitorArea: null,
+  firstSamples: [],
+  secondMonitorDate: '',
+  secondMonitorArea: null,
+  secondSamples: [],
+})
+const rules = reactive({
+  firstMonitorDate: [{ required: true, message: '请选择T1监测日期' }],
+  firstMonitorArea: [{ required: true, message: '请输入监测面积' }],
+  secondMonitorDate: [{ required: true, message: '请选择T2监测日期' }],
+})
+const formRef = ref()
+const addSampleBtn1stRef = ref()
+const addSampleBtn2ndRef = ref()
+const onAddSampleClick = (list, second) => {
+  list.push({
+    idNo: list.length + 1,
+    sampleArea: null,
+    plants: [],
+  })
+  nextTick(() => {
+    if (second) {
+      addSampleBtn2ndRef.value.$el.scrollIntoView({ behavior: 'smooth' })
+    } else {
+      addSampleBtn1stRef.value.$el.scrollIntoView({ behavior: 'smooth' })
+    }
+  })
+}
+
+const addPlant = (list) => {
+  list.push({
+    kind: null,
+    dbh: null,
+    height: null,
+  })
+}
+
+const removeItem = (list, index) => {
+  list.splice(index, 1)
+}
+
+const onSubmit = () => {
+  formRef.value.validate(async (isValid) => {
+    if (isValid) {
+      doCalc(formState)
+    } else {
+      ElMessage({
+        type: 'error',
+        message: '数据不完整，请检查',
+      })
+    }
+  })
+}
+
+const categoryOptions = ref([])
+const treeList = ref([])
+const initData = async () => {
+  categoryOptions.value = await loadTreeCategories()
+  treeList.value = await loadTreeList()
+}
+initData()
+</script>
+<style lang="scss" scoped>
+$btn-block-height: 60px;
+.calclate-view {
+  height: 100%;
+  .form-container {
+    height: calc(100% - $btn-block-height);
+  }
+  .calclate-container {
+    display: flex;
+    box-sizing: border-box;
+    height: 100%;
+    .calc-zone {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+
+      .title {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 24px;
+      }
+      .add-sample-btn {
+        width: 100%;
+        margin-top: 12px;
+      }
+      .sample-data-zone {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 12px;
+        position: relative;
+        &:hover {
+          background-color: #f9f9f9;
+          .remove-btn {
+            display: block;
+          }
+        }
+        .remove-btn {
+          position: absolute;
+          top: -8px;
+          right: -8px;
+          color: #f56c6c;
+          display: none;
+          cursor: pointer;
+        }
+        .sample-title {
+          color: #666;
+        }
+        & + .sample-data-zone {
+          margin-top: 12px;
+        }
+      }
+    }
+  }
+}
+.btn-block {
+  height: $btn-block-height;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.mt-18 {
+  margin-top: 18px;
+}
+.w-180 {
+  width: 180px;
+}
+.w-220 {
+  width: 220px;
+}
+</style>

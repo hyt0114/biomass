@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: biomass-backend
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/biomass?serverTimezone=UTC&characterEncoding=UTF-8&useSsl=false
+    username: root
+    password: 123456
+server:
+  port: 7777
+jwt:
+  secret: xmu+biomass+123456+secret@dev~!@#$%
+  expire: 86400
+calc:
+  precision: 4
