@@ -4,6 +4,7 @@ import com.xmu.biomass.common.utils.ResponseUtil;
 import com.xmu.biomass.common.vo.AjaxVo;
 import com.xmu.biomass.plant.ro.CalcFormsRo;
 import com.xmu.biomass.plant.service.CalculatorService;
+import com.xmu.biomass.plant.vo.CalcFormsExcelVo;
 import com.xmu.biomass.plant.vo.CalculateDiffResult;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -52,7 +53,7 @@ public class CarbonCalculatorController {
         }
     }
     @PostMapping("import")
-    public void importExcel(MultipartFile file){
-        System.out.println(file.getOriginalFilename());
+    public AjaxVo<CalcFormsExcelVo> importExcel(MultipartFile file){
+        return ResponseUtil.success(calculatorService.parseExcel(file));
     }
 }

@@ -101,10 +101,6 @@ public class MangroveService {
 
     }
 
-    public Mangrove selectById(String id) {
-        return mapper.selectById(id);
-    }
-
     public List<Mangrove> selectByIds(List<Integer> ids) {
         return mapper.selectByIds(ids);
     }
@@ -136,5 +132,12 @@ public class MangroveService {
         Objects.requireNonNull(mangrove,"数据不存在");
         mangrove.setDeleteAt(1D);
         return mapper.updateById(mangrove);
+    }
+
+    public Mangrove findExactByName(String mangroveName) {
+        LambdaQueryWrapper<Mangrove> queryWrapper = Wrappers.lambdaQuery();
+        queryWrapper.eq(Mangrove::getName,mangroveName)
+                .eq(Mangrove::getDeleteAt,0);
+        return mapper.selectOne(queryWrapper);
     }
 }

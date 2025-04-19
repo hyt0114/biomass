@@ -35,17 +35,27 @@ import { ElMessage, genFileId } from 'element-plus'
 
 const visible = defineModel('visible', { default: false })
 
+const emits = defineEmits(['on-done'])
+
 const loading = ref(false)
 const uploadRef = ref()
 const onDownload = async () => {
   await downloadTemplate()
 }
-const onImport = () => {
+const onImport = async () => {
   if (uploadFiles.value?.length) {
     loading.value = true
     const formData = new FormData()
     formData.set('file', uploadFiles.value[0].raw)
-    importData(formData)
+    try {
+      const importResult = await importData(formData)
+      emits('on-done', importResult)
+      visible.value = false
+      // eslint-disable-next-line no-unused-vars
+    } catch (_) {
+      // do noting
+    }
+    loading.value = false
   } else {
     ElMessage({
       type: 'error',

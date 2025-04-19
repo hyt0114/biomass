@@ -289,7 +289,11 @@
       >
     </div>
     <CalculateResult v-model:visible="calcResultVisible" :data="calcResult" />
-    <ImportDataDialog v-model:visible="importDialogVisible" v-if="importDialogVisible" />
+    <ImportDataDialog
+      v-model:visible="importDialogVisible"
+      v-if="importDialogVisible"
+      @on-done="onDataParseOk"
+    />
   </div>
 </template>
 <script setup>
@@ -300,6 +304,7 @@ import { ElMessage } from 'element-plus'
 import CalculateResult from './components/CalculateResult.vue'
 import CommonBlockTitle from '@/components/common/CommonBlockTitle.vue'
 import ImportDataDialog from './components/ImportDataDialog.vue'
+import { parse } from 'vue/compiler-sfc'
 const formState = reactive({
   firstMonitorDate: null,
   firstMonitorArea: null,
@@ -368,6 +373,10 @@ const onSubmit = () => {
       })
     }
   })
+}
+
+const onDataParseOk = (parseResult) => {
+  Object.assign(formState, parseResult)
 }
 
 const categoryOptions = ref([])

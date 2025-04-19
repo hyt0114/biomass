@@ -1,17 +1,22 @@
 package com.xmu.biomass.plant.service;
 
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.read.metadata.ReadSheet;
 import com.xmu.biomass.plant.calculator.CarbonRatioCalculator;
 import com.xmu.biomass.plant.entity.Mangrove;
 import com.xmu.biomass.plant.ro.CalcFormsRo;
 import com.xmu.biomass.plant.ro.CalcPlantRo;
 import com.xmu.biomass.plant.ro.CalcSampleRo;
 import com.xmu.biomass.plant.ro.CalculatorRo;
-import com.xmu.biomass.plant.vo.CalculateDiffResult;
-import com.xmu.biomass.plant.vo.SampleResult;
+import com.xmu.biomass.plant.util.CarbonRecordsDataListener;
+import com.xmu.biomass.plant.vo.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -80,5 +85,27 @@ public class CalculatorService {
      */
     private CarbonRatioCalculator getCalculator(String calcKey) {
         return calculators.stream().filter(c->c.getCalcKey().equals(calcKey)).findFirst().orElse(null);
+    }
+
+    public CalcFormsExcelVo parseExcel(MultipartFile file) {
+        SingleExcelVoData firstExcelVoData = new SingleExcelVoData();
+        SingleExcelVoData secondExcelVoData = new SingleExcelVoData();
+        try (ExcelReader excelReader = EasyExcel.read(file.getInputStream()).build()) {
+            ReadSheet readSheet1 =
+                    EasyExcel.readSheet(0).head(CarbonExcelVo.class).registerReadListener(new CarbonRecordsDataListener(mangroveService,firstExcelVoData)).build();
+            ReadSheet readSheet2 =
+                    EasyExcel.readSheet(1).head(CarbonExcelVo.class).registerReadListener(new CarbonRecordsDataListener(mangroveService,secondExcelVoData)).build();
+            excelReader.read(readSheet1, readSheet2);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        CalcFormsExcelVo vo = new CalcFormsExcelVo();
+        vo.setFirstMonitorArea(firstExcelVoData.getMonitorArea());
+        vo.setFirstMonitorDate(firstExcelVoData.getMonitorDate());
+        vo.setFirstSamples(firstExcelVoData.getSamples());
+        vo.setSecondMonitorArea(secondExcelVoData.getMonitorArea());
+        vo.setSecondMonitorDate(secondExcelVoData.getMonitorDate());
+        vo.setSecondSamples(secondExcelVoData.getSamples());
+        return vo;
     }
 }
