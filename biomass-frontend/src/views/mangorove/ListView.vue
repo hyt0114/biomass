@@ -91,10 +91,11 @@ const onEdit = (id) => {
 const onModifyDone = () => {
   gridRef.value.loadData()
 }
-const onDelete = async (row) => {
-  await useConfirm(`确定要删除数据 [${row.name}]？`)
-  await deleteMangrove(row.id)
-  onModifyDone()
+const onDelete = (row) => {
+  useConfirm(`确定要删除数据 [${row.name}]？`).then(async () => {
+    await deleteMangrove(row.id)
+    onModifyDone()
+  })
 }
 </script>
 <style lang="scss" scoped>

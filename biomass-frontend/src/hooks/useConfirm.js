@@ -5,18 +5,10 @@ const useConfirm = (
   confirmButtonText = '确定',
   cancelButtonText = '取消',
 ) => {
-  return new Promise((resolve, reject) => {
-    ElMessageBox.confirm(message, title, {
-      confirmButtonText,
-      cancelButtonText,
-      type: 'warning',
-    })
-      .then(() => {
-        resolve()
-      })
-      .catch(() => {
-        reject()
-      })
+  return ElMessageBox.confirm(message, title, {
+    confirmButtonText,
+    cancelButtonText,
+    type: 'warning',
   })
 }
 export default useConfirm

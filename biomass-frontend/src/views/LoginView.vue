@@ -30,8 +30,8 @@ const router = useRouter()
 
 const formRef = ref()
 const formState = reactive({
-  username: 'admin',
-  password: 'admin',
+  username: '',
+  password: '',
 })
 const rules = reactive({
   username: [{ required: true, message: '请输入用户名' }],
