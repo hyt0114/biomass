@@ -58,7 +58,7 @@ public class CalculatorService {
                 Map<Integer,Mangrove> sampleMangroveMap =   sampleMangroveList.stream().collect(Collectors.toMap(Mangrove::getId, Function.identity()));
                 Double sampleStorage = sample.getPlants().stream().map(plant->{
                     Mangrove mangrove  = sampleMangroveMap.get(plant.getId());
-                    CarbonRatioCalculator calculator = getCalculator(mangrove.getCalcKey());
+                    CarbonRatioCalculator calculator = getCalculator(mangrove.getFormula());
                     CalculatorRo calcParam = new CalculatorRo();
                     calcParam.setDbh(plant.getDbh());
                     calcParam.setHeight(plant.getHeight());

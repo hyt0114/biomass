@@ -22,5 +22,5 @@ public class UpdateMangroveRo {
     private Double carbonContentRatio;
     // 图片
     private MultipartFile img;
-    private String calcKey;
+    private String formula;
 }

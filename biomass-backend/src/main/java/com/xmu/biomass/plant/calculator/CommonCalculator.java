@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 public class CommonCalculator extends CarbonRatioCalculator{
+
+    private final Integer order = 999;
+
     private final String calcKey = "Common";
 
     public final String calcDescription = "通用方程";

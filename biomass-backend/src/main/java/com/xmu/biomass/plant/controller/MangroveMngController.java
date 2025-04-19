@@ -39,6 +39,14 @@ public class MangroveMngController {
         List<MangroveVo>  list = service.selectList();
         return ResponseUtil.success(list);
     }
+    @GetMapping("preset-calculators")
+    public AjaxVo<List<EnumVo>> getPresetCalculators() {
+        return ResponseUtil.success(service.getPresetCalculators());
+    }
+    @GetMapping("/{id}")
+    public AjaxVo<MangroveVo> addMangrove(@PathVariable Integer id) {
+        return ResponseUtil.success(service.findById(id));
+    }
     @PostMapping("add")
     public AjaxVo<Integer> addMangrove(@RequestBody AddMangroveRo ro) {
         Integer id = service.save(ro);
@@ -49,7 +57,10 @@ public class MangroveMngController {
         Integer id = service.update(ro);
         return ResponseUtil.success(id);
     }
-
+    @DeleteMapping("/{id}")
+    public AjaxVo<Integer> deleteMangrove(@PathVariable Integer id) {
+        return ResponseUtil.success(service.delete(id));
+    }
     @GetMapping("categories")
     public AjaxVo<List<EnumVo>> getCategories() {
         List<EnumVo> list = Arrays.stream(PlantCategoryEnum.values()).map(x->{

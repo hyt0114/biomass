@@ -10,9 +10,14 @@
         :width="column.width"
         :min-width="column.minWidth"
         :fixed="column.fixed"
-        v-for="(column, index) in columns"
+        :show-overflow-tooltip="!!column.tooltip"
+        v-for="(column, index) in props.columns"
         :key="index"
-      />
+      >
+        <template #default="scope" v-if="column.slot">
+          <slot :name="column.slot" :row="scope.row"></slot>
+        </template>
+      </el-table-column>
     </el-table>
     <el-pagination
       background
@@ -24,34 +29,30 @@
     />
   </div>
 </template>
-<script lang="ts" setup>
+<script setup>
 import { onMounted, reactive, ref, watch } from 'vue'
-interface ColumnType {
-  prop?: string
-  slot?: string
-  label: string
-  width?: number
-  minWidth?: number
-  [key: string]: unknown
-}
-interface PropsType {
-  columns: Array<ColumnType>
-  auto?: boolean
-  dataLoader: (data: unknown) => Promise<{
-    current: number
-    records: Array<unknown>
-    pages: number
-    size: number
-    total: number
-  }>
-  pageSize?: number
-}
-const { columns, auto = true, dataLoader, pageSize = 10 } = defineProps<PropsType>()
 
-const dataList = ref<Array<unknown>>([])
+const props = defineProps({
+  columns: {
+    type: Array,
+  },
+  auto: {
+    type: Boolean,
+    default: true,
+  },
+  dataLoader: {
+    type: Function,
+  },
+  pageSize: {
+    type: Number,
+    default: 10,
+  },
+})
+
+const dataList = ref([])
 const pagination = reactive({
   current: 1,
-  size: pageSize,
+  size: props.pageSize,
   total: 0,
 })
 watch(
@@ -61,17 +62,17 @@ watch(
   },
 )
 const loadData = async (refresh = false) => {
-  if (dataLoader) {
+  if (props.dataLoader) {
     if (refresh) {
       pagination.current = 1
     }
-    const { records, total } = await dataLoader({ ...pagination })
+    const { records, total } = await props.dataLoader({ ...pagination })
     dataList.value = records
     pagination.total = total
   }
 }
 onMounted(() => {
-  if (auto) {
+  if (props.auto) {
     loadData()
   }
 })

@@ -1,18 +1,37 @@
 <template>
   <el-drawer v-model="visible" direction="rtl" title="计算结果" size="1000px">
     <CommonBlockTitle title="红树林碳库增量" :clear-top-margin="true"></CommonBlockTitle>
-    <el-table :data="dataList" border class="common-grid-table">
-      <el-table-column
-        :prop="column.prop"
-        :label="column.label"
-        :width="column.width"
-        :min-width="column.minWidth"
-        :fixed="column.fixed"
-        v-for="(column, index) in columns"
-        :key="index"
-        :class-name="column.extraCss"
-      />
-    </el-table>
+    <div class="diff-block">
+      <div class="form-item-block">
+        <div class="label">T1监测日期</div>
+        <div class="content">{{ calcResult.firstMonitorDate }}</div>
+      </div>
+      <div class="form-item-block">
+        <div class="label">T1监测碳总量</div>
+        <div class="content">
+          <span class="text-primary">{{ calcResult.firstTotal.toFixed(2) }}</span
+          ><span class="storage-unit">kgC</span>
+        </div>
+      </div>
+      <div class="form-item-block">
+        <div class="label">T2监测日期</div>
+        <div class="content">{{ calcResult.secondMonitorDate }}</div>
+      </div>
+      <div class="form-item-block">
+        <div class="label">T2监测碳总量</div>
+        <div class="content">
+          <span class="text-primary">{{ calcResult.secondTotal.toFixed(2) }}</span
+          ><span class="storage-unit">kgC</span>
+        </div>
+      </div>
+      <div class="form-item-block">
+        <div class="label">碳库增量</div>
+        <div class="content">
+          <span class="text-success text-bold">{{ calcResult.difference.toFixed(2) }}</span
+          ><span class="storage-unit">kgC</span>
+        </div>
+      </div>
+    </div>
     <CommonBlockTitle title="T1监测结果明细"></CommonBlockTitle>
     <div class="grid-view">
       <el-card v-for="(sampleResult, index) in firstSampleResults" :key="index">
@@ -44,7 +63,7 @@
           </div>
         </div>
         <div class="form-item-block">
-          <div class="label">均碳储量</div>
+          <div class="label">平均碳储量</div>
           <div class="content">
             {{ sampleResult.averageStorage.toFixed(2) }}<span class="storage-unit">kgC</span>
           </div>
@@ -83,7 +102,7 @@
           </div>
         </div>
         <div class="form-item-block">
-          <div class="label">均碳储量</div>
+          <div class="label">平均碳储量</div>
           <div class="content">
             {{ sampleResult.averageStorage.toFixed(2) }}<span class="storage-unit">kgC</span>
           </div>
@@ -99,7 +118,7 @@
 </template>
 <script setup>
 import CommonBlockTitle from '@/components/common/CommonBlockTitle.vue'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 const visible = defineModel('visible', { default: false })
 
 const props = defineProps({
@@ -114,45 +133,6 @@ const props = defineProps({
 const calcResult = computed(() => {
   return props.data
 })
-const columns = ref([
-  {
-    prop: 'firstMonitorDate',
-    label: 'T1监测日期',
-    width: 140,
-  },
-  {
-    prop: 'firstTotal',
-    label: 'T1碳总量 (kgC)',
-    width: 210,
-  },
-  {
-    prop: 'secondMonitorDate',
-    label: 'T2监测日期',
-    width: 140,
-  },
-  {
-    prop: 'secondTotal',
-    label: 'T2碳总量 (kgC)',
-    width: 210,
-  },
-  {
-    prop: 'difference',
-    label: '增量 (kgC)',
-    extraCss: 'text-primary',
-    minWidth: 210,
-  },
-])
-const dataList = computed(() => {
-  return [
-    {
-      firstTotal: calcResult.value.firstTotal.toFixed(2),
-      secondTotal: calcResult.value.secondTotal.toFixed(2),
-      difference: calcResult.value.difference.toFixed(2),
-      firstMonitorDate: calcResult.value.firstMonitorDate,
-      secondMonitorDate: calcResult.value.secondMonitorDate,
-    },
-  ]
-})
 const firstSampleResults = computed(() => {
   return calcResult.value.firstSampleResults
 })
@@ -161,15 +141,6 @@ const secondSampleResults = computed(() => {
 })
 </script>
 <style lang="scss" scoped>
-.common-grid-table {
-  font-size: 18px;
-  :deep(td.text-primary) {
-    div.cell {
-      color: #409eff;
-      font-weight: bold;
-    }
-  }
-}
 .grid-view {
   display: grid;
   grid-template-columns: repeat(3, minmax(310px, 1fr));
@@ -179,9 +150,10 @@ const secondSampleResults = computed(() => {
   display: flex;
   margin: 4px 0;
   .label {
-    color: #999;
-    width: 90px;
+    color: #666;
+    width: 100px;
     text-align: right;
+    flex-shrink: 0;
     &::after {
       content: '：';
     }
@@ -193,14 +165,23 @@ const secondSampleResults = computed(() => {
 .tags-wrapper {
   display: flex;
   gap: 4px;
+  flex-wrap: wrap;
+}
+.diff-block {
+  .form-item-block {
+    font-size: 18px;
+    .label {
+      width: 140px;
+    }
+  }
 }
 .storage-unit {
   padding: 0 6px;
   font-size: 12px;
-  height: 22px;
-  line-height: 22px;
+  height: 24px;
+  line-height: 24px;
   border-radius: 4px;
-  background-color: #f0f0f0;
+  background-color: #f2f2f2;
   margin-left: 4px;
   color: #999;
 }

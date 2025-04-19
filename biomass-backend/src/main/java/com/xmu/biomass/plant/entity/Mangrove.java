@@ -23,5 +23,5 @@ public class Mangrove extends BaseEntity {
     private Double carbonContentRatio;
     // 图片
     private String img;
-    private String calcKey;
+    private String formula;
 }

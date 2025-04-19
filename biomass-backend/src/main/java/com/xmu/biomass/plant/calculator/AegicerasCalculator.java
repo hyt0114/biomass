@@ -19,6 +19,8 @@ import java.text.DecimalFormat;
 @Getter
 public class AegicerasCalculator extends CarbonRatioCalculator{
 
+    private final Integer order = 1;
+
     private final String calcKey = "Aegiceras";
 
     private final String calcDescription = "适用于桐花树";

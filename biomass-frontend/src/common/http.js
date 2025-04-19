@@ -32,16 +32,19 @@ const handleError = (error) => {
     })
   }
 }
-// Alter defaults after instance has been created
-
-export const get = (url, params) => {
-  return instance.get(url, {
-    params,
-  })
-}
-export const post = (url, data) => {
-  return instance.post(url, data)
-}
-export const put = (url, data) => {
-  return instance.put(url, data)
+export default {
+  get: (url, params) => {
+    return instance.get(url, {
+      params,
+    })
+  },
+  post: (url, data) => {
+    return instance.post(url, data)
+  },
+  put: (url, data) => {
+    return instance.put(url, data)
+  },
+  delete: (url, data) => {
+    return instance.delete(url, data)
+  },
 }

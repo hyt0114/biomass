@@ -23,5 +23,6 @@ public class MangroveVo extends BaseVo {
     private Double carbonContentRatio;
     // 图片
     private String img;
-    private String calcKey;
+    private String formula;
+    private String formulaDesc;
 }

@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 public class AvicenniaCalculator extends CarbonRatioCalculator{
+
+    private final Integer order = 2;
+
     private final String calcKey = "Avicennia";
 
     public final String calcDescription = "适用于白骨壤";

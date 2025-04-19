@@ -11,6 +11,7 @@ import java.util.Arrays;
  * @ Date：2025/4/9  下午4:13
  */
 public abstract class CarbonRatioCalculator {
+    public abstract Integer getOrder();
     public abstract String getCalcKey();
     public abstract String getCalcDescription();
     public abstract Double calculate(CalculatorRo ro);

@@ -1,5 +1,5 @@
-import { post } from '@/common/http'
+import http from '@/common/http'
 
 export function loadUserPage() {
-  return post('/sys/user/page')
+  return http.post('/sys/user/page')
 }

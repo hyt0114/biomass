@@ -1,5 +1,5 @@
-import { post } from '@/common/http'
+import http from '@/common/http'
 
 export function doLogin(formState) {
-  return post('/login', formState)
+  return http.post('/login', formState)
 }

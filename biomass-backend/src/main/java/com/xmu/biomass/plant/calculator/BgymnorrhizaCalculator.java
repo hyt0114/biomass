@@ -12,7 +12,10 @@ import org.springframework.stereotype.Component;
 @Getter
 @Component
 public class BgymnorrhizaCalculator extends CarbonRatioCalculator{
-    private final String calcKey = "Common";
+
+    private final Integer order = 3;
+
+    private final String calcKey = "Bgymnorrhiza";
 
     public final String calcDescription = "适用于木榄、海莲、尖瓣海莲";
 

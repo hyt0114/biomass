@@ -9,9 +9,7 @@
     >
       <div class="calclate-container">
         <div class="calc-zone border-right">
-          <div class="title">
-            <span>T1监测数据</span>
-          </div>
+          <CommonBlockTitle title="T1监测数据" :clear-top-margin="true" />
           <el-form-item prop="firstMonitorDate" label="T1监测日期">
             <el-date-picker
               v-model="formState.firstMonitorDate"
@@ -35,7 +33,7 @@
             v-for="(sample, sampleIndex) in formState.firstSamples"
             :key="sampleIndex"
           >
-            <div class="sample-title">样方{{ sample.idNo }}</div>
+            <div class="sample-title">样方{{ sampleIndex + 1 }}</div>
             <el-form-item
               label="样方面积"
               :prop="`firstSamples[${sampleIndex}].sampleArea`"
@@ -63,7 +61,7 @@
                     :prop="`firstSamples[${sampleIndex}].plants[${plantIndex}].id`"
                     :rules="{ required: true, message: '请选择', trigger: 'change' }"
                   >
-                    <el-select v-model="plant.id" placeholder="植株物种" class="w-140 mr-12">
+                    <el-select v-model="plant.id" placeholder="植株物种" class="w-120 mr-12">
                       <el-option
                         v-for="plant in treeList"
                         :key="plant.id"
@@ -81,7 +79,7 @@
                       :min="0"
                       :max="999999"
                       :precision="2"
-                      class="w-180 mr-12"
+                      class="w-170 mr-12"
                       v-model="plant.dbh"
                       placeholder="胸径/基径"
                     >
@@ -97,7 +95,7 @@
                       :min="0"
                       :max="999999"
                       :precision="2"
-                      class="w-180 mr-12"
+                      class="w-170 mr-12"
                       v-model="plant.height"
                       placeholder="树高"
                     >
@@ -139,9 +137,7 @@
           >
         </div>
         <div class="calc-zone">
-          <div class="title">
-            <span>T2监测数据</span>
-          </div>
+          <CommonBlockTitle title="T2监测数据" :clear-top-margin="true" />
           <el-form-item prop="secondMonitorDate" label="T2监测日期">
             <el-date-picker
               v-model="formState.secondMonitorDate"
@@ -164,7 +160,7 @@
             v-for="(sample, sampleIndex) in formState.secondSamples"
             :key="sampleIndex"
           >
-            <div class="sample-title">样方{{ sample.idNo }}</div>
+            <div class="sample-title">样方{{ sampleIndex + 1 }}</div>
             <el-form-item
               label="样方面积"
               :prop="`secondSamples[${sampleIndex}].sampleArea`"
@@ -192,7 +188,7 @@
                     :prop="`secondSamples[${sampleIndex}].plants[${plantIndex}].id`"
                     :rules="{ required: true, message: '请选择', trigger: 'change' }"
                   >
-                    <el-select v-model="plant.id" placeholder="植株物种" class="w-140 mr-12">
+                    <el-select v-model="plant.id" placeholder="植株物种" class="w-120 mr-12">
                       <el-option
                         v-for="plant in treeList"
                         :key="plant.id"
@@ -210,7 +206,7 @@
                       :min="0"
                       :max="999999"
                       :precision="2"
-                      class="w-180 mr-12"
+                      class="w-170 mr-12"
                       v-model="plant.dbh"
                       placeholder="胸径/基径"
                     >
@@ -226,7 +222,7 @@
                       :min="0"
                       :max="999999"
                       :precision="2"
-                      class="w-180 mr-12"
+                      class="w-170 mr-12"
                       v-model="plant.height"
                       placeholder="树高"
                     >
@@ -283,7 +279,7 @@ import IconSquareMeter from '@/components/icons/IconSquareMeter.vue'
 import { loadTreeCategories, loadTreeList, doCalc } from '@/api/calculator'
 import { ElMessage } from 'element-plus'
 import CalculateResult from './components/CalculateResult.vue'
-
+import CommonBlockTitle from '@/components/common/CommonBlockTitle.vue'
 const formState = reactive({
   firstMonitorDate: null,
   firstMonitorArea: null,
@@ -303,7 +299,6 @@ const addSampleBtn1stRef = ref()
 const addSampleBtn2ndRef = ref()
 const onAddSampleClick = (list, second) => {
   list.push({
-    idNo: list.length + 1,
     sampleArea: null,
     plants: [],
   })
@@ -361,7 +356,7 @@ const initData = async () => {
 initData()
 </script>
 <style lang="scss" scoped>
-$btn-block-height: 60px;
+$btn-block-height: 66px;
 .calclate-view {
   height: 100%;
   .form-container {
@@ -371,11 +366,13 @@ $btn-block-height: 60px;
     display: flex;
     box-sizing: border-box;
     height: 100%;
+    gap: 20px;
     .calc-zone {
       flex: 1;
       padding: 12px;
       overflow-y: auto;
-
+      border-radius: 4px;
+      box-shadow: 0 0 8px 0 #e0e0e0;
       .title {
         font-size: 18px;
         font-weight: bold;
@@ -423,11 +420,11 @@ $btn-block-height: 60px;
 .mt-18 {
   margin-top: 18px;
 }
-.w-140 {
-  width: 140px;
+.w-120 {
+  width: 120px;
 }
-.w-180 {
-  width: 180px;
+.w-170 {
+  width: 170px;
 }
 .w-220 {
   width: 220px;
