@@ -11,7 +11,7 @@
         <div class="calc-zone border-right">
           <CommonBlockTitle title="T1监测数据" :clear-top-margin="true">
             <template #append>
-              <el-button type="primary" plain class="ml-auto">
+              <el-button type="primary" plain class="ml-auto" @click="importDialogVisible = true">
                 <template #icon>
                   <el-icon :size="18"><UploadFilled /></el-icon>
                 </template>
@@ -289,6 +289,7 @@
       >
     </div>
     <CalculateResult v-model:visible="calcResultVisible" :data="calcResult" />
+    <ImportDataDialog v-model:visible="importDialogVisible" v-if="importDialogVisible" />
   </div>
 </template>
 <script setup>
@@ -298,6 +299,7 @@ import { loadTreeCategories, loadTreeList, doCalc } from '@/api/calculator'
 import { ElMessage } from 'element-plus'
 import CalculateResult from './components/CalculateResult.vue'
 import CommonBlockTitle from '@/components/common/CommonBlockTitle.vue'
+import ImportDataDialog from './components/ImportDataDialog.vue'
 const formState = reactive({
   firstMonitorDate: null,
   firstMonitorArea: null,
@@ -350,6 +352,9 @@ const calcResult = reactive({
   firstMonitorDate: '',
   secondMonitorDate: '',
 })
+
+const importDialogVisible = ref(false)
+
 const onSubmit = () => {
   formRef.value.validate(async (isValid) => {
     if (isValid) {

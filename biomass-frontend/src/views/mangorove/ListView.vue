@@ -30,11 +30,6 @@ import { loadMangrovePage, deleteMangrove } from '@/api/mangrove'
 import useConfirm from '@/hooks/useConfirm'
 const columns = ref([
   {
-    prop: 'id',
-    label: 'id',
-    width: 80,
-  },
-  {
     prop: 'name',
     label: '植物名称',
     width: 160,

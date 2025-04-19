@@ -2,6 +2,7 @@ package com.xmu.biomass.plant.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xmu.biomass.common.context.UserContext;
 import com.xmu.biomass.common.ro.PageRo;
@@ -36,7 +37,7 @@ public class MangroveService {
 
     public Pagination<MangroveVo> selectPage(PageRo ro) {
         Page<Mangrove> page = new Page<>(ro.getCurrent(),ro.getSize());
-        LambdaQueryWrapper<Mangrove> queryWrapper = new LambdaQueryWrapper();
+        LambdaQueryWrapper<Mangrove> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(Mangrove::getDeleteAt,0);
         mapper.selectPage(page, queryWrapper);
         Map<String,String> map = calculators.stream().collect(Collectors.toMap(CarbonRatioCalculator::getCalcKey, CarbonRatioCalculator::getCalcDescription));
@@ -83,8 +84,10 @@ public class MangroveService {
 
 
     public List<MangroveVo> selectList() {
-       List<Mangrove> list = mapper.selectList(new QueryWrapper<>());
-       return list.stream().map(mangrove->{
+        LambdaQueryWrapper<Mangrove> queryWrapper  = Wrappers.lambdaQuery();
+        queryWrapper.eq(Mangrove::getDeleteAt,0);
+        List<Mangrove> list = mapper.selectList(queryWrapper);
+        return list.stream().map(mangrove->{
            MangroveVo vo = new MangroveVo();
            vo.setId(mangrove.getId());
            vo.setName(mangrove.getName());

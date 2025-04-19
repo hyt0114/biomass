@@ -12,7 +12,23 @@ instance.interceptors.request.use(function (config) {
 instance.interceptors.response.use(
   function (response) {
     if (response.status === 200) {
-      return response.data?.data
+      if (response.config.responseType === 'blob') {
+        // 下载文件
+        const contentDisposition = response.headers['content-disposition']
+        const pattern = /^attachment; filename=(.*)$/
+        const filename = pattern.exec(contentDisposition)[1]
+        let link = document.createElement('a')
+        link.download = filename
+        link.style.display = 'none'
+        let href = window.URL.createObjectURL(response.data)
+        link.href = href
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        window.URL.revokeObjectURL(link)
+      } else {
+        return response.data?.data
+      }
     } else {
       handleError(response)
     }
@@ -46,5 +62,13 @@ export default {
   },
   delete: (url, data) => {
     return instance.delete(url, data)
+  },
+  download: (url, data) => {
+    return instance({
+      method: 'post',
+      url,
+      data,
+      responseType: 'blob',
+    })
   },
 }

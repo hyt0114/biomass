@@ -9,3 +9,9 @@ export function loadTreeList() {
 export function doCalc(data) {
   return http.post('/carbon/calc/handle', data)
 }
+export function downloadTemplate() {
+  return http.download('/carbon/calc/download-template')
+}
+export function importData(data) {
+  return http.post('/carbon/calc/import', data)
+}

@@ -4,6 +4,11 @@
       <slot name="buttons"></slot>
     </div>
     <el-table :data="dataList" border class="common-grid-table">
+      <el-table-column label="序号" width="80">
+        <template #default="scope">
+          {{ scope.$index + 1 + props.pageSize * (pagination.current - 1) }}
+        </template>
+      </el-table-column>
       <el-table-column
         :prop="column.prop"
         :label="column.label"
