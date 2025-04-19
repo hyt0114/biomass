@@ -9,7 +9,16 @@
     >
       <div class="calclate-container">
         <div class="calc-zone border-right">
-          <CommonBlockTitle title="T1监测数据" :clear-top-margin="true" />
+          <CommonBlockTitle title="T1监测数据" :clear-top-margin="true">
+            <template #append>
+              <el-button type="primary" plain class="ml-auto">
+                <template #icon>
+                  <el-icon :size="18"><UploadFilled /></el-icon>
+                </template>
+                从excel导入
+              </el-button>
+            </template>
+          </CommonBlockTitle>
           <el-form-item prop="firstMonitorDate" label="T1监测日期">
             <el-date-picker
               v-model="formState.firstMonitorDate"
@@ -137,7 +146,16 @@
           >
         </div>
         <div class="calc-zone">
-          <CommonBlockTitle title="T2监测数据" :clear-top-margin="true" />
+          <CommonBlockTitle title="T2监测数据" :clear-top-margin="true">
+            <template #append>
+              <el-button type="primary" plain class="ml-auto">
+                <template #icon>
+                  <el-icon :size="18"><UploadFilled /></el-icon>
+                </template>
+                从excel导入
+              </el-button>
+            </template>
+          </CommonBlockTitle>
           <el-form-item prop="secondMonitorDate" label="T2监测日期">
             <el-date-picker
               v-model="formState.secondMonitorDate"

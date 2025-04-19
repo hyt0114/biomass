@@ -5,10 +5,9 @@
         <el-button type="primary" @click="onAddMangrove">新增</el-button>
       </template>
       <template #formula="{ row }">
-        <span>
+        <el-tooltip :content="row.formulaDesc" placement="right">
           <span>{{ row.formula }}</span>
-          <span class="ml-4 text-info">{{ row.formulaDesc }}</span>
-        </span>
+        </el-tooltip>
       </template>
       <template #action="{ row }">
         <el-button type="primary" link @click="onEdit(row.id)">编辑</el-button>
@@ -33,12 +32,12 @@ const columns = ref([
   {
     prop: 'id',
     label: 'id',
-    width: 100,
+    width: 80,
   },
   {
     prop: 'name',
     label: '植物名称',
-    width: 180,
+    width: 160,
   },
   {
     prop: 'scientificName',
@@ -59,8 +58,7 @@ const columns = ref([
   {
     slot: 'formula',
     label: '公式',
-    width: 200,
-    tooltip: true,
+    width: 180,
   },
   {
     prop: 'img',

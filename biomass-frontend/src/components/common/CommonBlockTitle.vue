@@ -1,6 +1,7 @@
 <template>
   <div class="common-block-title" :class="{ 'clear-top-margin': props.clearTopMargin }">
-    {{ props.title }}
+    <div>{{ props.title }}</div>
+    <slot name="append"></slot>
   </div>
 </template>
 <script setup>
