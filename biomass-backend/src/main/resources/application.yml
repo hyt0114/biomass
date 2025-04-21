@@ -13,3 +13,6 @@ jwt:
   expire: 86400
 calc:
   precision: 4
+user:
+  default:
+    password: 123456

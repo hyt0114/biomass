@@ -130,6 +130,7 @@ public class MangroveService {
     public Integer delete(Integer id) {
         Mangrove mangrove = mapper.selectById(id);
         Objects.requireNonNull(mangrove,"数据不存在");
+        mangrove.setUpdateBy(UserContext.getUser().getId().toString());
         mangrove.setDeleteAt(1D);
         return mapper.updateById(mangrove);
     }
