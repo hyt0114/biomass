@@ -1,12 +1,19 @@
 <template>
   <div class="login-container">
-    <el-form ref="formRef" :model="formState" :rules="rules" label-width="0" class="login-form">
+    <el-form
+      ref="formRef"
+      :model="formState"
+      :rules="rules"
+      label-width="0"
+      class="login-form"
+      @keyup.enter="handleLogin"
+    >
       <div class="login-title">欢迎登录</div>
       <el-form-item label="" prop="username">
         <el-input v-model="formState.username" placeholder="用户名" />
       </el-form-item>
       <el-form-item label="" prop="password">
-        <el-input v-model="formState.password" placeholder="密码" />
+        <el-input v-model="formState.password" type="password" placeholder="密码" />
       </el-form-item>
       <div class="login-btn-wrapper">
         <el-button
@@ -25,7 +32,8 @@ import { reactive, ref } from 'vue'
 import { doLogin } from '@/api/login'
 import { setToken } from '@/common/access-util'
 import { useRouter } from 'vue-router'
-
+import { ElMessage } from 'element-plus'
+import { Base64 } from 'js-base64'
 const router = useRouter()
 
 const formRef = ref()
@@ -40,9 +48,22 @@ const rules = reactive({
 const handleLogin = () => {
   formRef.value.validate(async (isValid) => {
     if (isValid) {
-      const token = await doLogin(formState)
-      setToken(token)
-      router.push({ name: 'home' })
+      doLogin({
+        username: formState.username,
+        password: Base64.encode(formState.password),
+      })
+        .then((token) => {
+          if (token) {
+            setToken(token)
+            router.push({ name: 'home' })
+          }
+        })
+        .catch((e) => {
+          ElMessage({
+            type: 'error',
+            message: e.message || '登录失败',
+          })
+        })
     }
   })
 }

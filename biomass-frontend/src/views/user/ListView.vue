@@ -1,12 +1,22 @@
 <template>
   <div>
-    <CommonGrid :columns="columns" :data-loader="loadUserPage" />
+    <CommonGrid :columns="columns" :data-loader="loadUserPage">
+      <template #buttons>
+        <el-button type="primary" @click="onAddUser">新增</el-button>
+      </template>
+    </CommonGrid>
+    <ModifyUserDialog
+      v-model:visible="modifyUserDialogVisible"
+      :id="currentEditId"
+      v-if="modifyUserDialogVisible"
+    />
   </div>
 </template>
 <script setup>
 import { ref } from 'vue'
 import CommonGrid from '@/components/form/CommonGrid.vue'
 import { loadUserPage } from '@/api/user'
+import ModifyUserDialog from './components/ModifyUserDialog.vue'
 const columns = ref([
   {
     prop: 'id',
@@ -34,4 +44,9 @@ const columns = ref([
     minWidth: 180,
   },
 ])
+const modifyUserDialogVisible = ref(false)
+const currentEditId = ref(null)
+const onAddUser = () => {
+  modifyUserDialogVisible.value = true
+}
 </script>

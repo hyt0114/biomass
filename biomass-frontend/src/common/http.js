@@ -30,23 +30,26 @@ instance.interceptors.response.use(
         return response.data?.data
       }
     } else {
-      handleError(response)
+      return handleError(response)
     }
   },
   function (error) {
-    handleError(error)
+    return handleError(error)
   },
 )
 const handleError = (error) => {
   if (error.status === 401) {
     clearToken()
-    redirectToLogin()
+    if (error?.response?.data === true) {
+      redirectToLogin()
+    }
   } else {
     ElMessage({
       message: error?.response?.data?.message || '系统异常',
       type: 'error',
     })
   }
+  return Promise.reject(new Error(error?.response?.data?.message || '系统异常'))
 }
 export default {
   get: (url, params) => {

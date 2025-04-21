@@ -2,7 +2,9 @@ package com.xmu.biomass.sys.user.controller;
 
 import com.xmu.biomass.common.anotations.IgnoreAuth;
 import com.xmu.biomass.common.exception.BusinessException;
+import com.xmu.biomass.common.exception.LoginFailException;
 import com.xmu.biomass.common.utils.JwtUtl;
+import com.xmu.biomass.common.utils.PasswordUtil;
 import com.xmu.biomass.common.utils.ResponseUtil;
 import com.xmu.biomass.common.vo.AjaxVo;
 import com.xmu.biomass.login.ro.LoginRo;
@@ -25,13 +27,17 @@ public class LoginController {
 
     private final SysUserService sysUserService;
     private final JwtUtl jwtUtl;
+    private final PasswordUtil passwordUtil;
 
     @RequestMapping("/login")
     @IgnoreAuth
     public AjaxVo<String> login(@RequestBody LoginRo loginRo) {
-        SysUser user = sysUserService.findUserByLogin(loginRo.getUsername(),loginRo.getPassword());
+        SysUser user = sysUserService.findUserByUserName(loginRo.getUsername());
         if(Objects.isNull(user)){
-           throw new BusinessException("登录失败");
+           throw new LoginFailException("登录失败");
+        }
+        if(!passwordUtil.matches(loginRo.getPassword(), user.getPassword(),true)){
+            throw new LoginFailException("验证失败，用户名或密码不正确");
         }
         String token = jwtUtl.generateToken(user.getId().toString());
         return ResponseUtil.success(token);

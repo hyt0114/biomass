@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xmu.biomass.common.utils.PaginationUtil;
+import com.xmu.biomass.common.utils.PasswordUtil;
 import com.xmu.biomass.common.vo.Pagination;
 import com.xmu.biomass.sys.user.entity.SysUser;
 import com.xmu.biomass.sys.user.mapper.SysUserMapper;
 import com.xmu.biomass.sys.user.vo.SysUserVo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,10 +31,9 @@ public class SysUserService {
         });
     }
 
-    public SysUser findUserByLogin(String username,String password){
+    public SysUser findUserByUserName(String username){
         LambdaQueryWrapper<SysUser> wrapper = Wrappers.lambdaQuery();
         wrapper.eq(SysUser::getUsername,username);
-        wrapper.eq(SysUser::getPassword,password);
         return sysUserMapper.selectOne(wrapper);
     }
 

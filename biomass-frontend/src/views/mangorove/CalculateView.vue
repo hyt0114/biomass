@@ -8,7 +8,7 @@
       class="form-container height-full"
     >
       <div class="calclate-container">
-        <div class="calc-zone border-right">
+        <div class="calc-zone">
           <CommonBlockTitle title="T1监测数据" :clear-top-margin="true">
             <template #append>
               <el-button type="primary" plain class="ml-auto" @click="importDialogVisible = true">

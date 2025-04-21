@@ -1,6 +1,7 @@
 package com.xmu.biomass.config;
 
 import com.xmu.biomass.common.exception.BusinessException;
+import com.xmu.biomass.common.exception.LoginFailException;
 import com.xmu.biomass.common.vo.AjaxVo;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
@@ -32,10 +33,17 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(JwtException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public AjaxVo<?> unauthorizedError(JwtException ex){
-        AjaxVo<?> ajaxVo = new AjaxVo<>();
-        ajaxVo.setMessage("登录已过期，请重新登录");
+    public AjaxVo<Boolean> unauthorizedError(JwtException ex){
+        AjaxVo<Boolean> ajaxVo = new AjaxVo<>();
+        ajaxVo.setMessage("验证失败，请重新登录");
+        ajaxVo.setData(true);
         return ajaxVo;
     }
-
+    @ExceptionHandler(LoginFailException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public AjaxVo<?> loginError(LoginFailException ex){
+        AjaxVo<?> ajaxVo = new AjaxVo<>();
+        ajaxVo.setMessage(ex.getMessage());
+        return ajaxVo;
+    }
 }

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="visible" title="新增" width="680px">
+  <el-dialog v-model="visible" :title="props.id ? '编辑' : '新增'" width="680px">
     <el-form
       ref="formRef"
       :model="formState"

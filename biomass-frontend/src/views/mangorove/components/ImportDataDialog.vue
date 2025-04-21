@@ -7,7 +7,14 @@
     :close-on-click-modal="!loading"
   >
     <div>
-      <div><el-button type="primary" link @click="onDownload"> 下载导入模板</el-button></div>
+      <div>
+        <el-button type="primary" link @click="onDownload">
+          下载导入模板
+          <template #icon>
+            <el-icon><Download /></el-icon>
+          </template>
+        </el-button>
+      </div>
       <el-upload
         class="mt-12"
         drag
