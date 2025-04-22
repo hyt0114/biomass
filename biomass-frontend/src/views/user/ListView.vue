@@ -4,8 +4,22 @@
       <template #buttons>
         <el-button type="primary" @click="onAddUser">新增</el-button>
       </template>
+      <template #status="{ row }">
+        <el-switch
+          v-model="row.lockFlag"
+          inline-prompt
+          active-text="启用"
+          inactive-text="禁用"
+          :active-value="0"
+          :inactive-value="1"
+          disabled
+        />
+      </template>
       <template #action="{ row }">
         <el-button type="primary" link @click="onEditUser(row.id)">编辑</el-button>
+        <el-button type="primary" link @click="onToggleStatus(row.id)">{{
+          row.lockFlag === 1 ? '启用' : '禁用'
+        }}</el-button>
         <el-button type="danger" link @click="onDelete(row)">删除</el-button>
       </template>
     </CommonGrid>
@@ -20,7 +34,7 @@
 <script setup>
 import { nextTick, ref } from 'vue'
 import CommonGrid from '@/components/form/CommonGrid.vue'
-import { loadUserPage, deleteUser } from '@/api/user'
+import { loadUserPage, deleteUser, toggleStatus } from '@/api/user'
 import ModifyUserDialog from './components/ModifyUserDialog.vue'
 import useConfirm from '@/hooks/useConfirm'
 import { useMessageSuccess } from '@/hooks/useMessage'
@@ -41,6 +55,11 @@ const columns = ref([
     width: 180,
   },
   {
+    slot: 'status',
+    label: '状态',
+    width: 120,
+  },
+  {
     prop: 'email',
     label: '邮箱',
     minWidth: 180,
@@ -48,7 +67,7 @@ const columns = ref([
   {
     slot: 'action',
     label: '操作',
-    width: 140,
+    width: 180,
     fixed: 'right',
   },
 ])
@@ -73,6 +92,13 @@ const onDelete = (data) => {
     nextTick(() => {
       refresh()
     })
+  })
+}
+const onToggleStatus = async (id) => {
+  await toggleStatus(id)
+  useMessageSuccess('操作成功')
+  nextTick(() => {
+    refresh()
   })
 }
 </script>

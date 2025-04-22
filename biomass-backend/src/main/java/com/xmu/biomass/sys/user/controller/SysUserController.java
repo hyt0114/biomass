@@ -31,18 +31,19 @@ public class SysUserController {
 
     @PostMapping("add")
     public AjaxVo<Integer> add(@RequestBody AddUserRo addUserRo){
-        Integer id = sysUserService.createUser(addUserRo);
-        return ResponseUtil.success(id);
+        return ResponseUtil.success(sysUserService.createUser(addUserRo));
     }
 
     @PutMapping("update")
     public AjaxVo<Integer> update(@RequestBody UpdateUserRo updateUserRo){
-        Integer id = sysUserService.updateUser(updateUserRo);
-        return ResponseUtil.success(id);
+        return ResponseUtil.success(sysUserService.updateUser(updateUserRo));
     }
     @DeleteMapping("{id}")
     public AjaxVo<Integer> delete(@PathVariable Integer id){
-        Integer count = sysUserService.deleteById(id);
-        return ResponseUtil.success(count);
+        return ResponseUtil.success(sysUserService.deleteById(id));
+    }
+    @PutMapping("toggle/{id}")
+    public AjaxVo<Integer> toggle(@PathVariable Integer id){
+        return ResponseUtil.success(sysUserService.toggleStatus(id));
     }
 }

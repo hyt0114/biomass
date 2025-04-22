@@ -41,6 +41,7 @@ public class SysUserService {
             vo.setRealName(sysUser.getRealName());
             vo.setEmail(sysUser.getEmail());
             vo.setAvatar(sysUser.getAvatar());
+            vo.setLockFlag(sysUser.getLockFlag());
             return vo;
         });
     }
@@ -66,6 +67,7 @@ public class SysUserService {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String password = encoder.encode(userBaseProperties.getPassword());
         sysUser.setPassword(password);
+        sysUser.setLockFlag(0);
         sysUser.setCreateBy(UserContext.getUser().getId().toString());
         sysUser.setUpdateBy(UserContext.getUser().getId().toString());
         return sysUserMapper.insert(sysUser);
@@ -81,7 +83,7 @@ public class SysUserService {
         vo.setRealName(sysUser.getRealName());
         vo.setEmail(sysUser.getEmail());
         vo.setAvatar(sysUser.getAvatar());
-        vo.setLockFlag(0);
+        vo.setLockFlag(sysUser.getLockFlag());
         return vo;
     }
 
@@ -102,6 +104,13 @@ public class SysUserService {
         Objects.requireNonNull(sysUser,"用户不存在");
         sysUser.setUpdateBy(UserContext.getUser().getId().toString());
         sysUser.setDeleteAt(1D);
+        return sysUserMapper.updateById(sysUser);
+    }
+
+    public Integer toggleStatus(Integer id) {
+        SysUser sysUser = sysUserMapper.selectById(id);
+        Objects.requireNonNull(sysUser,"用户不存在");
+        sysUser.setLockFlag(sysUser.getLockFlag().equals(1) ? 0 : 1);
         return sysUserMapper.updateById(sysUser);
     }
 }

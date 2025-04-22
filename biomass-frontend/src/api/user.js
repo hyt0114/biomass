@@ -15,3 +15,6 @@ export function loadUserInfo(id) {
 export function deleteUser(id) {
   return http.delete(`/sys/user/${id}`)
 }
+export function toggleStatus(id) {
+  return http.put(`/sys/user/toggle/${id}`)
+}

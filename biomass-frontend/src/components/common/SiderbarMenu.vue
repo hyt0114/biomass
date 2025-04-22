@@ -26,7 +26,6 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import type { MenuItemProp } from '@/common/menu'
 import { menus as menusData } from '@/common/menu'
 const defaultActive = ref('')
 
@@ -34,19 +33,24 @@ const router = useRouter()
 const route = useRoute()
 const menus = ref(menusData)
 
-const navigateTo = (routerName: string) => {
+const navigateTo = (routerName) => {
   router.push({ name: routerName })
 }
 
-const findActiveMenuId = (name: string, menus: Array<MenuItemProp>): string => {
+const findActiveMenuId = (name, menus) => {
   for (const menu of menus) {
+    let activeId = null
     if (menu.router === name) {
-      return menu.id
+      activeId = menu.id
+      return activeId
     } else if (menu.children?.length) {
-      return findActiveMenuId(name, menu.children)
+      activeId = findActiveMenuId(name, menu.children)
+    }
+    if (activeId) {
+      return activeId
     }
   }
-  return ''
+  return null
 }
 
 onMounted(() => {
@@ -54,7 +58,7 @@ onMounted(() => {
     router.push({ name: menus.value[0].children[0].router })
     defaultActive.value = findActiveMenuId(menus.value[0].children[0].router, menus.value)
   } else {
-    defaultActive.value = findActiveMenuId(route.name as string, menus.value)
+    defaultActive.value = findActiveMenuId(route.name, menus.value)
   }
 })
 </script>

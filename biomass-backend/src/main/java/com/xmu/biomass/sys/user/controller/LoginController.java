@@ -36,6 +36,9 @@ public class LoginController {
         if(Objects.isNull(user)){
            throw new LoginFailException("登录失败");
         }
+        if(user.getLockFlag().equals(1)){
+            throw new LoginFailException("用户已被禁用，请联系管理员");
+        }
         if(!passwordUtil.matches(loginRo.getPassword(), user.getPassword(),true)){
             throw new LoginFailException("验证失败，用户名或密码不正确");
         }
