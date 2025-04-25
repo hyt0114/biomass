@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xmu.biomass.common.context.UserContext;
 import com.xmu.biomass.common.ro.PageRo;
+import com.xmu.biomass.common.utils.ImageToBase64;
 import com.xmu.biomass.common.utils.PaginationUtil;
 import com.xmu.biomass.common.vo.EnumVo;
 import com.xmu.biomass.common.vo.Pagination;
@@ -18,10 +19,8 @@ import com.xmu.biomass.plant.vo.MangroveVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.io.IOException;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -49,6 +48,7 @@ public class MangroveService {
             vo.setDescription(mangrove.getDescription());
             vo.setCarbonContentRatio(mangrove.getCarbonContentRatio());
             vo.setDensity(mangrove.getDensity());
+            vo.setImg(mangrove.getImg());
             vo.setFormula(mangrove.getFormula());
             vo.setFormulaDesc(map.get(mangrove.getFormula()));
             return vo;
@@ -77,6 +77,13 @@ public class MangroveService {
         mangrove.setDescription(ro.getDescription());
         mangrove.setDensity(ro.getDensity());
         mangrove.setCarbonContentRatio(ro.getCarbonContentRatio());
+        if(!Objects.isNull(ro.getImg())){
+            try {
+                mangrove.setImg(ImageToBase64.convert(ro.getImg().getBytes(),ro.getImg().getOriginalFilename()));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
         mangrove.setFormula(ro.getFormula());
         mangrove.setUpdateBy(UserContext.getUser().getId().toString());
         return mapper.updateById(mangrove);

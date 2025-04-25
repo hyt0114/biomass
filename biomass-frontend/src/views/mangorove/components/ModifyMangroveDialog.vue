@@ -51,6 +51,9 @@
           style="width: 100%"
         />
       </el-form-item>
+      <el-form-item label="图片">
+        <CommonFilePicker v-model:files="formState.img" />
+      </el-form-item>
       <el-form-item label="描述" prop="description" placeholder="请输入描述">
         <el-input
           v-model="formState.description"
@@ -69,6 +72,7 @@
 </template>
 <script setup>
 import { reactive, ref } from 'vue'
+import CommonFilePicker from '@/components/form/CommonFilePicker.vue'
 import { getMangrove, addMangrove, updateMangrove, getPresetCalculators } from '@/api/mangrove'
 const visible = defineModel('visible', { default: false })
 
@@ -89,7 +93,7 @@ const formState = reactive({
   density: null,
   carbonContentRatio: null,
   description: null,
-  img: null,
+  img: [],
 })
 const rules = reactive({
   name: [{ required: true, message: '请输入植物名称' }],
@@ -102,12 +106,20 @@ const calculatorOptions = ref([])
 const onSubmit = () => {
   formRef.value.validate(async (isValid) => {
     if (isValid) {
+      const formData = new FormData()
+      for (let key in formState) {
+        if (formState[key] !== null) {
+          formData.set(key, formState[key])
+        }
+      }
+      formData.delete('img')
+      if (formState.img?.length) {
+        formData.set('img', formState.img[0].raw)
+      }
       if (!formState.id) {
-        await addMangrove({
-          ...formState,
-        })
+        await addMangrove(formData)
       } else {
-        await updateMangrove({ ...formState })
+        await updateMangrove(formData)
       }
       visible.value = false
       emits('done')
@@ -118,6 +130,7 @@ const initData = async () => {
   if (props.id) {
     const persistData = await getMangrove(props.id)
     Object.assign(formState, persistData)
+    formState.img = persistData.img ? [persistData.img] : []
   }
   calculatorOptions.value = await getPresetCalculators()
 }

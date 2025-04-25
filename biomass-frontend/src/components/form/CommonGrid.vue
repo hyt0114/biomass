@@ -14,6 +14,7 @@
         :label="column.label"
         :width="column.width"
         :min-width="column.minWidth"
+        :align="column.align"
         :fixed="column.fixed"
         :show-overflow-tooltip="!!column.tooltip"
         v-for="(column, index) in props.columns"

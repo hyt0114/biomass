@@ -1,5 +1,8 @@
 <template>
-  <el-drawer v-model="visible" direction="rtl" title="计算结果" size="1000px">
+  <el-drawer v-model="visible" direction="rtl" size="1000px">
+    <template #title>
+      <div class="drawer-title">计算结果</div>
+    </template>
     <CommonBlockTitle title="红树林碳库增量" :clear-top-margin="true"></CommonBlockTitle>
     <div class="diff-block">
       <div class="form-item-block">
@@ -184,5 +187,10 @@ const secondSampleResults = computed(() => {
   background-color: #f2f2f2;
   margin-left: 4px;
   color: #999;
+}
+.drawer-title {
+  font-weight: bold;
+  font-size: 28px;
+  color: #111111;
 }
 </style>

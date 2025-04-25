@@ -4,6 +4,17 @@
       <template #buttons>
         <el-button type="primary" @click="onAddMangrove">新增</el-button>
       </template>
+      <template #img="{ row }">
+        <ElImage
+          :src="row.img"
+          v-if="row.img"
+          :preview-src-list="[row.img]"
+          fit="cover"
+          :z-index="9999"
+          preview-teleported
+          class="img-preview"
+        ></ElImage>
+      </template>
       <template #formula="{ row }">
         <el-tooltip :content="row.formulaDesc" placement="right">
           <span>{{ row.formula }}</span>
@@ -28,6 +39,7 @@ import CommonGrid from '@/components/form/CommonGrid.vue'
 import ModifyMangroveDialog from './components/ModifyMangroveDialog.vue'
 import { loadMangrovePage, deleteMangrove } from '@/api/mangrove'
 import useConfirm from '@/hooks/useConfirm'
+import { ElImage } from 'element-plus'
 const columns = ref([
   {
     prop: 'name',
@@ -56,9 +68,10 @@ const columns = ref([
     width: 180,
   },
   {
-    prop: 'img',
+    slot: 'img',
     label: '图片',
     width: 120,
+    align: 'center',
   },
   {
     prop: 'description',
@@ -96,5 +109,11 @@ const onDelete = (row) => {
 <style lang="scss" scoped>
 .ml-4 {
   margin-left: 4px;
+}
+.img-preview {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  margin: 0 auto;
 }
 </style>

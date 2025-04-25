@@ -48,12 +48,12 @@ public class MangroveMngController {
         return ResponseUtil.success(service.findById(id));
     }
     @PostMapping("add")
-    public AjaxVo<Integer> addMangrove(@RequestBody AddMangroveRo ro) {
+    public AjaxVo<Integer> addMangrove( AddMangroveRo ro) {
         Integer id = service.save(ro);
         return ResponseUtil.success(id);
     }
     @PutMapping("update")
-    public AjaxVo<Integer> updateMangrove(@RequestBody UpdateMangroveRo ro) {
+    public AjaxVo<Integer> updateMangrove(@ModelAttribute UpdateMangroveRo ro) {
         Integer id = service.update(ro);
         return ResponseUtil.success(id);
     }
