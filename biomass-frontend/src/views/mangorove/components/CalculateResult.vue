@@ -1,6 +1,6 @@
 <template>
   <el-drawer v-model="visible" direction="rtl" size="1000px">
-    <template #title>
+    <template #header>
       <div class="drawer-title">计算结果</div>
     </template>
     <CommonBlockTitle title="红树林碳库增量" :clear-top-margin="true"></CommonBlockTitle>
@@ -34,6 +34,13 @@
           ><span class="storage-unit">kgC</span>
         </div>
       </div>
+      <div class="form-item-block">
+        <div class="label">碳汇量</div>
+        <div class="content">
+          <span class="text-success text-bold">{{ calcResult.carbonSink.toFixed(2) }}</span
+          ><span class="storage-unit">kg CO2</span>
+        </div>
+      </div>
     </div>
     <CommonBlockTitle title="T1监测结果明细"></CommonBlockTitle>
     <div class="grid-view">
@@ -45,7 +52,10 @@
         </template>
         <div class="form-item-block">
           <div class="label">样方面积</div>
-          <div class="content">{{ sampleResult.sampleArea.toFixed(2) }}</div>
+          <div class="content flex align-center">
+            <div>{{ sampleResult.sampleArea.toFixed(2) }}</div>
+            <IconSquareMeter class="square-20 ml-8" />
+          </div>
         </div>
         <div class="form-item-block">
           <div class="label">植株数量</div>
@@ -84,7 +94,10 @@
         </template>
         <div class="form-item-block">
           <div class="label">样方面积</div>
-          <div class="content">{{ sampleResult.sampleArea.toFixed(2) }}</div>
+          <div class="content flex align-center">
+            <div>{{ sampleResult.sampleArea.toFixed(2) }}</div>
+            <IconSquareMeter class="square-20 ml-8" />
+          </div>
         </div>
         <div class="form-item-block">
           <div class="label">植株数量</div>
@@ -192,5 +205,8 @@ const secondSampleResults = computed(() => {
   font-weight: bold;
   font-size: 28px;
   color: #111111;
+}
+.ml-8 {
+  margin-left: 8px;
 }
 </style>

@@ -36,7 +36,10 @@ public class CarbonRecordsDataListener implements ReadListener<CarbonExcelVo> {
         Integer rowIndex = analysisContext.readRowHolder().getRowIndex();
         if(rowIndex.compareTo(2)>0){
             String sampleIndexStr = carbonExcelVo.getSampleIndex();
-            if(!StringUtils.hasText(sampleIndexStr) || "......".equals(sampleIndexStr)){
+            if(!StringUtils.hasText(sampleIndexStr)){
+                throw new BusinessException("样方号不能为空");
+            }
+            if("......".equals(sampleIndexStr)){
                 return;
             }
             Integer sampleIndex = Integer.valueOf(sampleIndexStr);
@@ -44,7 +47,7 @@ public class CarbonRecordsDataListener implements ReadListener<CarbonExcelVo> {
             if(calcSampleRo==null){
                 calcSampleRo = new CalcSampleRo();
                 if(!StringUtils.hasText(carbonExcelVo.getSampleArea())){
-                    throw new BusinessException("样方面积不能为空");
+                    throw new BusinessException("样方"+sampleIndex+"的样方面积不能为空");
                 }
                 Double sampleArea = Double.valueOf(carbonExcelVo.getSampleArea());
                 calcSampleRo.setSampleArea(sampleArea);
@@ -56,11 +59,14 @@ public class CarbonRecordsDataListener implements ReadListener<CarbonExcelVo> {
             if(StringUtils.hasText(mangroveName) && !mangroveName.equals("...")){
                 mangroveName = mangroveName.trim();
                 Mangrove mangrove = mangroveService.findExactByName(mangroveName);
-                Objects.requireNonNull(mangrove,String.format("第%s行数据%s不在系统物种范围内，无法进行计算",rowIndex,mangroveName));
+                Objects.requireNonNull(mangrove,String.format("第%s行数据%s不在系统物种范围内，无法进行计算",rowIndex+1,mangroveName));
                 CalcPlantRo plantRo = new CalcPlantRo();
                 plantRo.setId(mangrove.getId());
+                if(!StringUtils.hasText(carbonExcelVo.getDbh())){
+                    throw new BusinessException("第"+(rowIndex + 1)+"行的数据胸径/基径不能为空");
+                }
                 plantRo.setDbh(Double.valueOf(carbonExcelVo.getDbh()));
-                plantRo.setHeight(Objects.isNull(carbonExcelVo.getHeight()) ? 0 :Double.parseDouble(carbonExcelVo.getHeight()));
+                plantRo.setHeight(Objects.isNull(carbonExcelVo.getHeight()) ? null :Double.parseDouble(carbonExcelVo.getHeight()));
                 calcSampleRo.getPlants().add(plantRo);
             }
         }
@@ -74,7 +80,7 @@ public class CarbonRecordsDataListener implements ReadListener<CarbonExcelVo> {
         localDate = localDate.plusDays(monitorDateNum.longValue()-2);
         singleExcelVoData.setMonitorDate(localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         BigDecimal monitorArea = headMap.get(3).getNumberValue();
-        Objects.requireNonNull(monitorArea,"监测区域面积不能为空");
+        Objects.requireNonNull(monitorArea,"项目区面积不能为空");
         singleExcelVoData.setMonitorArea(monitorArea.doubleValue());
     }
 

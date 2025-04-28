@@ -45,7 +45,9 @@ public class CalculatorService {
         result.setSecondSampleResults(secondSampleResultList);
         result.setFirstMonitorDate(ro.getFirstMonitorDate());
         result.setSecondMonitorDate(ro.getSecondMonitorDate());
-        result.setDifference(secondTotal- firstTotal);
+        double diff = secondTotal - firstTotal;
+        result.setDifference(diff);
+        result.setCarbonSink(diff * 44 /12);
         return result;
     }
     private List<SampleResult> calcSampleResults(List<CalcSampleRo> list) {

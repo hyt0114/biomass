@@ -14,8 +14,8 @@ export const menus = [
         router: 'mangrove-list',
       },
       {
-        id: 'js',
-        title: '计算',
+        id: 'thcl',
+        title: '碳汇测量',
         icon: 'Iphone',
         router: 'mangrove-calc',
       },

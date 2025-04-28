@@ -33,5 +33,5 @@ public class BaseEntity {
     /**
      * 删除标志
      */
-    private Double deleteAt;
+    private Long deleteAt;
 }

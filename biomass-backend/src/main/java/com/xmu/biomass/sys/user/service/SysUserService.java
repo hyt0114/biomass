@@ -103,7 +103,7 @@ public class SysUserService {
         SysUser sysUser = sysUserMapper.selectById(id);
         Objects.requireNonNull(sysUser,"用户不存在");
         sysUser.setUpdateBy(UserContext.getUser().getId().toString());
-        sysUser.setDeleteAt(1D);
+        sysUser.setDeleteAt(System.currentTimeMillis());
         return sysUserMapper.updateById(sysUser);
     }
 

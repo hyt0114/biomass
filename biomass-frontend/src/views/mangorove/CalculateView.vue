@@ -5,7 +5,7 @@
       :model="formState"
       :rules="rules"
       label-width="120px"
-      class="form-container height-full"
+      class="form-container"
     >
       <div class="calclate-container">
         <div class="calc-zone">
@@ -95,11 +95,7 @@
                       <template #suffix>cm</template>
                     </el-input-number>
                   </el-form-item>
-                  <el-form-item
-                    label=""
-                    :prop="`firstSamples[${sampleIndex}].plants[${plantIndex}].height`"
-                    :rules="{ required: true, message: '请输入', trigger: 'blur' }"
-                  >
+                  <el-form-item label="">
                     <el-input-number
                       :min="0"
                       :max="999999"
@@ -231,11 +227,7 @@
                       <template #suffix>cm</template>
                     </el-input-number>
                   </el-form-item>
-                  <el-form-item
-                    label=""
-                    :prop="`secondSamples[${sampleIndex}].plants[${plantIndex}].height`"
-                    :rules="{ required: true, message: '请输入', trigger: 'blur' }"
-                  >
+                  <el-form-item label="">
                     <el-input-number
                       :min="0"
                       :max="999999"
@@ -304,7 +296,7 @@ import { ElMessage } from 'element-plus'
 import CalculateResult from './components/CalculateResult.vue'
 import CommonBlockTitle from '@/components/common/CommonBlockTitle.vue'
 import ImportDataDialog from './components/ImportDataDialog.vue'
-import { parse } from 'vue/compiler-sfc'
+import moment from 'moment'
 const formState = reactive({
   firstMonitorDate: null,
   firstMonitorArea: null,
@@ -363,6 +355,13 @@ const importDialogVisible = ref(false)
 const onSubmit = () => {
   formRef.value.validate(async (isValid) => {
     if (isValid) {
+      if (!moment(formState.firstMonitorDate).isBefore(formState.secondMonitorDate)) {
+        ElMessage({
+          type: 'error',
+          message: 'T2监测日期必须大于T1监测日期',
+        })
+        return
+      }
       const resp = await doCalc(formState)
       Object.assign(calcResult, resp)
       calcResultVisible.value = true

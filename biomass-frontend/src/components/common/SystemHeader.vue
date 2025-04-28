@@ -1,6 +1,6 @@
 <template>
   <div class="system-header">
-    <div class="system-name">红树林碳含量监测</div>
+    <div class="system-name">红树林生态系统植物群落碳汇测量软件</div>
     <el-icon :size="28" class="quit-button cursor" @click="logout" title="退出登录"
       ><SwitchButton
     /></el-icon>

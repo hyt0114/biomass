@@ -15,6 +15,7 @@ public class CalculateDiffResult {
     private Double firstTotal;
     private Double secondTotal;
     private Double difference;
+    private Double carbonSink;
     private String firstMonitorDate;
     private String secondMonitorDate;
 }

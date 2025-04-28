@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.text.DecimalFormat;
+import java.util.Objects;
 
 /**
  * @ Author：ythu
@@ -27,6 +28,9 @@ public class AegicerasCalculator extends CarbonRatioCalculator{
 
     @Override
     public Double calculate(CalculatorRo ro) {
+        if(Objects.isNull(ro.getHeight())){
+            ro.setHeight(1D);
+        }
         PlantCategoryEnum categoryEnum = processCategory(ro);
         if(PlantCategoryEnum.BUSH == categoryEnum){
             return this.calculateBush(ro);

@@ -30,5 +30,5 @@ public class BaseVo {
     /**
      * 删除标志
      */
-    private Double deleteAt;
+    private Long deleteAt;
 }
